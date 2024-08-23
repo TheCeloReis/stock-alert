@@ -2,5 +2,8 @@ node_modules
 build
 
 .env
+.env.*
 
 /output/**
+
+firebase-debug.log

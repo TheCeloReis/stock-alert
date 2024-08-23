@@ -1,0 +1,12 @@
+{
+  "projects": {
+    "default": "stock-alert-6cf90"
+  },
+  "targets": {},
+  "etags": {
+    "stock-alert-6cf90": {
+      "extensionInstances": {}
+    }
+  },
+  "dataconnectEmulatorConfig": {}
+}

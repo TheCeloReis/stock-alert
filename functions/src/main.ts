@@ -1,5 +1,3 @@
-import "dotenv/config";
-
 import { getStock } from "./api/polygon";
 import { stringify } from "csv-stringify";
 import { sendMail } from "./mail/mailer";
@@ -16,14 +14,14 @@ type RowType = {
   value: number;
 };
 
-const main = async () => {
+export const routine = async () => {
   const [rows, errors] = await getAllStocks();
   if (errors.length) {
     console.error(errors);
   }
 
   const rawCsv = await generateCSV(rows);
-  fs.writeFileSync(path.join(__dirname, "..", "output", "stocks.csv"), rawCsv);
+  fs.writeFileSync(path.join("/tmp", "stocks.csv"), rawCsv);
 
   sendMail({
     subject: "Stocks",
@@ -31,7 +29,7 @@ const main = async () => {
     attachments: [
       {
         filename: "stocks.csv",
-        path: path.join(__dirname, "..", "output", "stocks.csv"),
+        path: path.join("/tmp", "stocks.csv"),
       },
     ],
   });
@@ -88,5 +86,3 @@ async function generateCSV(rows: RowType[]): Promise<string> {
     );
   });
 }
-
-main();
