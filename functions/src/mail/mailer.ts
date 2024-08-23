@@ -21,11 +21,10 @@ type SendMailOptions = {
 
 export async function sendMail(options: SendMailOptions) {
   const info = await transporter.sendMail({
-    from: '"Celo Reis 👻" <hello@celoreis.dev>', // sender address
-    to: "oi@celoreis.dev", // list of receivers
+    from: '"Celo Reis 👻" <hello@celoreis.dev>',
+    to: "oi@celoreis.dev",
     subject: options.subject,
-    text: "Hello world?", // plain text body
-    html: "<b>Hello world?</b>",
+    text: options.text,
     attachments: options.attachments,
   });
 

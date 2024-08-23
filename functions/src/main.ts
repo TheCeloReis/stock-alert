@@ -4,7 +4,7 @@ import { sendMail } from "./mail/mailer";
 import fs from "fs";
 import path from "path";
 
-const STOCKS = ["AAPL", "GOOGL", "MSFT", "AMZN", "TSLA"];
+const STOCKS = ["AAPL", "GOOGL", "MSFT", "AMZN", "INTC"];
 
 const YESTERDAY = new Date(Date.now() - 1000 * 60 * 60 * 24);
 
@@ -23,9 +23,17 @@ export const routine = async () => {
   const rawCsv = await generateCSV(rows);
   fs.writeFileSync(path.join("/tmp", "stocks.csv"), rawCsv);
 
+  let text = "Hello, here is your stock report from yesterday\n\n";
+  if (errors.length) {
+    text += "Some stocks could not be fetched:\n";
+    errors.forEach((error) => {
+      text += `${error.stock}: ${error.error.message}\n`;
+    });
+  }
+
   sendMail({
-    subject: "Stocks",
-    text: "Here are the stocks",
+    subject: `Your stock report from ${YESTERDAY.toISOString().split("T")[0]}`,
+    text: text,
     attachments: [
       {
         filename: "stocks.csv",
@@ -35,10 +43,12 @@ export const routine = async () => {
   });
 };
 
-async function getAllStocks(): Promise<[RowType[], Error[]]> {
+async function getAllStocks(): Promise<
+  [RowType[], { stock: string; error: Error }[]]
+> {
   const rows: RowType[] = [];
 
-  const errors: Error[] = [];
+  const errors: { stock: string; error: Error }[] = [];
 
   const promises = STOCKS.map(async (stock) => {
     try {
@@ -53,7 +63,7 @@ async function getAllStocks(): Promise<[RowType[], Error[]]> {
         value: stockData.close,
       });
     } catch (error: any) {
-      errors.push(error);
+      errors.push({ error, stock });
     }
   });
 
