@@ -1,22 +1,9 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * import {onCall} from "firebase-functions/v2/https";
- * import {onDocumentWritten} from "firebase-functions/v2/firestore";
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
-
-require("dotenv").config();
-
 import { onRequest } from "firebase-functions/v2/https";
+import { onSchedule } from "firebase-functions/v2/scheduler";
 import * as logger from "firebase-functions/logger";
 import { routine } from "./main";
 
-// Start writing functions
-// https://firebase.google.com/docs/functions/typescript
-
-export const helloWorld = onRequest(async (request, response) => {
+export const manualReport = onRequest(async (_, response) => {
   try {
     await routine();
     logger.info("Routine executed successfully");
@@ -28,3 +15,20 @@ export const helloWorld = onRequest(async (request, response) => {
     response.status(500).send("Routine failed");
   }
 });
+
+// every weekday at 8am
+export const scheduledReport = onSchedule(
+  {
+    schedule: "0 8 * * 1-5",
+    timeZone: "America/Sao_Paulo",
+    retryCount: 0,
+  },
+  async () => {
+    try {
+      await routine();
+      logger.info("Routine executed successfully");
+    } catch (error) {
+      logger.error(error);
+    }
+  }
+);
