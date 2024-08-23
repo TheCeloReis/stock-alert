@@ -25,11 +25,9 @@ type StockResponse = {
   preMarket: number;
 };
 
-export async function getStock(stockSymbol: string) {
+export async function getStock(stockSymbol: string, date: string) {
   const { data } = await axios.get<string>(
-    `/v1/open-close/${stockSymbol}/${
-      new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString().split("T")[0]
-    }/?adjusted=true`
+    `/v1/open-close/${stockSymbol}/${date}/?adjusted=true`
   );
 
   return JSON.parse(data) as StockResponse;

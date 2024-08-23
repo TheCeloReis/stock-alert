@@ -2,7 +2,8 @@
   "dependencies": {
     "axios": "^1.7.4",
     "csv-generate": "^4.4.1",
-    "csv-stringify": "^6.5.1"
+    "csv-stringify": "^6.5.1",
+    "nodemailer": "^6.9.14"
   },
   "scripts": {
     "start": "node ./build/main.js",
@@ -10,6 +11,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.3.0",
+    "@types/nodemailer": "^6.4.15",
     "dotenv": "^16.4.5",
     "typescript": "^5.5.4"
   }
